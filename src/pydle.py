@@ -22,7 +22,7 @@ def resource_path(relative_path):
 
 
 def getWord():
-    lines = open(resource_path('words.txt')).read().splitlines()
+    lines = open(resource_path('resource/words.txt')).read().splitlines()
     return random.choice(lines)
 
 
