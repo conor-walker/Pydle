@@ -48,3 +48,7 @@ jobs:
         pypi_index_url: https://pypi.python.org/simple
         # Specify a file path for .spec file
         spec: pydle.spec
+    - uses: actions/upload-artifact@v2
+      with:
+        name: pydle.exe
+        path: src/dist/windows
