@@ -1,11 +1,13 @@
+import os
 import random
+import sys
 
 
-def getGuess():
+def getGuess(number):
     validGuess = False
     guess = ""
     while not validGuess:
-        guess = str(input("Please guess:")).upper()
+        guess = str(input("Guess " + str(number) + " / 6: ")).upper()
         if len(guess) > 5 or len(guess) < 5:
             print("Invalid guess - please ensure you're guessing a word of 5 letters")
         else:
@@ -13,8 +15,14 @@ def getGuess():
     return guess
 
 
+# Get absolute path to resource - works when run from script and compiled using PyInstaller
+def resource_path(relative_path):
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+
 def getWord():
-    lines = open('words.txt').read().splitlines()
+    lines = open(resource_path('words.txt')).read().splitlines()
     return random.choice(lines)
 
 
@@ -25,16 +33,27 @@ def checkRight(wordToGuess, guessSoFar):
         return False
 
 
-emptyWordGuess = ["_"]*5
+def header():
+    return r" ______   ______  _     _____" + "\n" + \
+           r"|  _ \ \ / /  _ \| |   | ____|" + "\n" + \
+           r"| |_) \ V /| | | | |   |  _|" + "\n" + \
+           r"|  __/ | | | |_| | |___| |___" + "\n" + \
+           r"|_|    |_| |____/|_____|_____|"
+
+
+print("Welcome to...")
+print(header())
+print("A totally original guessing game!")
+emptyWordGuess = ["_"] * 5
 wrongLetters = set()
 rightLettersWrongPlace = set()
 wordToGuess = list(getWord().upper())
 # print(wordToGuess)
 
-counter = 0
-while counter < 5:
-    userGuess = getGuess()
-    emptyWordGuess = ["_"]*5
+counter = 1
+while counter < 6:
+    userGuess = getGuess(counter)
+    emptyWordGuess = ["_"] * 5
     for i in range(len(userGuess)):
         if wordToGuess[i] == userGuess[i]:
             emptyWordGuess[i] = userGuess[i]
