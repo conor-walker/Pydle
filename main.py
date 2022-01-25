@@ -1,3 +1,6 @@
+import random
+
+
 def getGuess():
     validGuess = False
     guess = ""
@@ -10,6 +13,11 @@ def getGuess():
     return guess
 
 
+def getWord():
+    lines = open('words').read().splitlines()
+    return random.choice(lines)
+
+
 def checkRight(wordToGuess, guessSoFar):
     if str(wordToGuess).upper() == str(guessSoFar).upper():
         return True
@@ -20,12 +28,13 @@ def checkRight(wordToGuess, guessSoFar):
 emptyWordGuess = ["_"]*5
 wrongLetters = set()
 rightLettersWrongPlace = set()
-wordToGuess = ["P", "L", "A", "N", "S"]
+wordToGuess = list(getWord().upper())
+print(wordToGuess)
 
-userGuess = getGuess()
 counter = 0
-
 while counter < 5:
+    userGuess = getGuess()
+    emptyWordGuess = ["_"]*5
     for i in range(len(userGuess)):
         if wordToGuess[i] == userGuess[i]:
             emptyWordGuess[i] = userGuess[i]
@@ -43,7 +52,6 @@ while counter < 5:
     print("Correct letters in the wrong place: " + str(rightLettersWrongPlace))
     print("Result: " + " ".join(emptyWordGuess))
     counter += 1
-    userGuess = getGuess()
 
 print("Ran out of guesses! The word was: ", "".join(wordToGuess))
 exit(69)
