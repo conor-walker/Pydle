@@ -29,7 +29,7 @@ emptyWordGuess = ["_"]*5
 wrongLetters = set()
 rightLettersWrongPlace = set()
 wordToGuess = list(getWord().upper())
-print(wordToGuess)
+# print(wordToGuess)
 
 counter = 0
 while counter < 5:
