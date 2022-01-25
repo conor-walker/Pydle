@@ -52,3 +52,6 @@ jobs:
       with:
         name: pydle.exe
         path: src/dist/windows
+    - uses: actions/upload-artifact@v2
+      with:
+        path: src/dist/linux
