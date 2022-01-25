@@ -32,7 +32,7 @@ jobs:
         # Specify a custom URL for PYPI Index
         pypi_index_url: https://pypi.python.org/simple
         # Specify a file path for .spec file
-        spec: src/pydle.spec
+        spec: pydle.spec
         # Specify whether to install Tkinter or not
         tkinter: false
     - name: PyInstaller Windows
@@ -47,6 +47,4 @@ jobs:
         # Specify a custom URL for PYPI Index
         pypi_index_url: https://pypi.python.org/simple
         # Specify a file path for .spec file
-        spec: src/pydle.spec
-        # Specify whether to install Tkinter or not
-        tkinter: false
+        spec: pydle.spec
