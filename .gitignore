@@ -1,2 +1,6 @@
 ﻿virtual_environment
 .idea
+main.spec
+dist
+build
+__pycache__

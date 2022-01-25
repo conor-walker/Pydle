@@ -14,7 +14,7 @@ def getGuess():
 
 
 def getWord():
-    lines = open('words').read().splitlines()
+    lines = open('words.txt').read().splitlines()
     return random.choice(lines)
 
 
