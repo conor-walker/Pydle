@@ -32,6 +32,9 @@ def checkRight(wordToGuess, guessSoFar):
     else:
         return False
 
+def quit():
+    input("Thanks for playing! Press ENTER to exit :)")
+    sys.exit(0)
 
 def header():
     return r" ______   ______  _     _____" + "\n" + \
@@ -66,12 +69,11 @@ while counter < 6:
             wrongLetters.add(userGuess[i])
     if checkRight(wordToGuess, emptyWordGuess):
         print("Congratulations! The word was", ''.join(wordToGuess).capitalize())
-        exit(420)
+        quit()
     print("Incorrect letters: " + ', '.join(wrongLetters))
-
     print("Correct letters in the wrong place: " + ', '.join(rightLettersWrongPlace))
     print("Result: " + " ".join(emptyWordGuess))
     counter += 1
 
 print("Ran out of guesses! The word was: ", "".join(wordToGuess))
-exit(69)
+quit()
