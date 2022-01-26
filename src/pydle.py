@@ -67,8 +67,9 @@ while counter < 6:
     if checkRight(wordToGuess, emptyWordGuess):
         print("Congratulations! The word was", ''.join(wordToGuess).capitalize())
         exit(420)
-    print("Incorrect letters: " + str(wrongLetters))
-    print("Correct letters in the wrong place: " + str(rightLettersWrongPlace))
+    print("Incorrect letters: " + ', '.join(wrongLetters))
+
+    print("Correct letters in the wrong place: " + ', '.join(rightLettersWrongPlace))
     print("Result: " + " ".join(emptyWordGuess))
     counter += 1
 

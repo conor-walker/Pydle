@@ -1,0 +1,58 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python application
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.10"
+    - name: PyInstaller Linux
+      # You may pin to the exact commit or the version.
+      # uses: JackMcKew/pyinstaller-action-linux@38639c352a36917eea765f9283bfd1092c28af7b
+      uses: JackMcKew/pyinstaller-action-linux@0.1.4
+      with:
+        # Directory containing source code & .spec file (optional requirements.txt).
+        path: src
+        # Specify a custom URL for PYPI
+        pypi_url: https://pypi.python.org/
+        # Specify a custom URL for PYPI Index
+        pypi_index_url: https://pypi.python.org/simple
+        # Specify a file path for .spec file
+        spec: pydle.spec
+        # Specify whether to install Tkinter or not
+        tkinter: false
+    - name: PyInstaller Windows
+      # You may pin to the exact commit or the version.
+      # uses: JackMcKew/pyinstaller-action-windows@a8dee21ad01bbc7e7363d445bb632691b95ba057
+      uses: JackMcKew/pyinstaller-action-windows@v0.1.2
+      with:
+        # Directory containing source code (optional requirements.txt).
+        path: src
+        # Specify a custom URL for PYPI
+        pypi_url: https://pypi.python.org/
+        # Specify a custom URL for PYPI Index
+        pypi_index_url: https://pypi.python.org/simple
+        # Specify a file path for .spec file
+        spec: pydle.spec
+    - uses: actions/upload-artifact@v2
+      with:
+        name: pydleWindows
+        path: src/dist/windows
+    - uses: actions/upload-artifact@v2
+      with:
+        name: pydleUnix
+        path: src/dist/linux
