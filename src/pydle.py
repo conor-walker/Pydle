@@ -32,10 +32,12 @@ def checkRight(wordToGuess, guessSoFar):
     else:
         return False
 
+    
 def quit():
     input("Thanks for playing! Press ENTER to exit :)")
     sys.exit(0)
 
+    
 def header():
     return r" ______   ______  _     _____" + "\n" + \
            r"|  _ \ \ / /  _ \| |   | ____|" + "\n" + \
@@ -48,8 +50,7 @@ print("Welcome to...")
 print(header())
 print("A totally original guessing game!")
 emptyWordGuess = ["_"] * 5
-wrongLetters = set()
-rightLettersWrongPlace = set()
+wrongLetters, rightLettersWrongPlace = set()
 wordToGuess = list(getWord().upper())
 # print(wordToGuess)
 
