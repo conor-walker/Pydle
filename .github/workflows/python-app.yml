@@ -50,8 +50,9 @@ jobs:
         spec: pydle.spec
     - uses: actions/upload-artifact@v2
       with:
-        name: pydle.exe
+        name: pydleWindows
         path: src/dist/windows
     - uses: actions/upload-artifact@v2
       with:
+        name: pydleUnix
         path: src/dist/linux
