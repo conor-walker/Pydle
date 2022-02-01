@@ -8,8 +8,11 @@ A word game similar to Wordle, implemented in Python!
 
 ## Prerequisites & Running
 To run from source, you'll need to have Python installed and accessible on your system. 
-Download the repository locally, open a terminal in the src folder, and enter python pydle.py in the terminal window. And enjoy!
-Compiled binaries are provided in the releases section for Windows and Unix systems. For Windows, the exe can run as-is. For MacOS/Linux, download the pydle file, adn in a terminal window run the command ```chmod +x /path/pydle ```, then ```pydle``` while still in the directory.
+- Download the repository locally
+- Open a terminal in the **src** folder
+- Enter ```python pydle.py``` in the terminal window. 
+- And enjoy!
+Compiled binaries are provided in the releases section for Windows and Unix systems. For Windows, the exe can run as-is. For MacOS/Linux, download the pydle file, adn in a terminal window run the command ```chmod +x /path/pydle```, then ```pydle``` while still in the directory.
 
 ## Future
 I don't anticipate spending a huge amount of time on this in the near future, but small things I'd like to throw in are:
