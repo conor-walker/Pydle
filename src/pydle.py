@@ -1,6 +1,7 @@
 import os
 import random
 import sys
+from datetime import date
 
 
 # Gets the input from a user - number param is used to display the guess number the user is on
@@ -22,10 +23,19 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-# Gets a random word from a words.txt file present in the same directory as this script
+# Gets a random word from a words.txt file present in the same directory as this script.
+# If file is not present, uses a small fallback list of words.
+# Shuffles based on a seed and selects a consistent member of the list to allow consistency between runs on same day.
 def get_random_word():
-    lines = open(resource_path('words.txt')).read().splitlines()
-    return random.choice(lines)
+    lines = []
+    try:
+        lines = open(resource_path('words.txt')).read().splitlines()
+    except IOError:
+        lines = ["Arrow", "Pride", "Whole", "React", "Chose", "Quote", "Adieu", "Story", "Whale", "Musty", "Korea",
+                 "Snide", "Zebra", "Shite", "Plans", "Bride", "Blare", "Child", "Towns", "Treat", "Lusty", "Ocean"]
+    random.seed(int(date.today().day))
+    random.shuffle(lines)
+    return lines[1]
 
 
 # Compares the users input with the word to be guessed. Returns true if the guess is correct, false otherwise
