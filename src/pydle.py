@@ -3,6 +3,7 @@ import random
 import sys
 
 
+# Gets the input from a user - number param is used to display the guess number the user is on
 def get_guess(number):
     validGuess = False
     guess = ""
@@ -61,6 +62,22 @@ def game_over(user_was_right, correct_word):
     sys.exit(0)
 
 
+# Takes in the users guess and the myriad lists involved in the game logic, and compares the letters in the guess
+# with the word to be guessed.
+# Inserts the letter into the appropriate list, based on its presence & position (or lack thereof)
+def check_letter_in_word(users_guess_input, word_to_be_guessed, users_guess_results, present_in_word, not_in_word):
+    for i in range(len(users_guess_input)):
+        if word_to_be_guessed[i] == users_guess_input[i]:
+            users_guess_results[i] = users_guess_input[i]
+        elif users_guess_input[i] in word_to_be_guessed:
+            if users_guess_input[i] in users_guess_results and users_guess_input[i] not in word_to_be_guessed[i:]:
+                break
+            else:
+                present_in_word.add(users_guess_input[i])
+        else:
+            not_in_word.add(users_guess_input[i])
+
+
 # Main game flow.
 def game_logic():
     not_in_word, present_in_word = set(), set()
@@ -69,16 +86,7 @@ def game_logic():
     while counter < 7:
         users_guess_input = get_guess(counter)
         users_guess_results = ["_"] * 5
-        for i in range(len(users_guess_input)):
-            if word_to_be_guessed[i] == users_guess_input[i]:
-                users_guess_results[i] = users_guess_input[i]
-            elif users_guess_input[i] in word_to_be_guessed:
-                if users_guess_input[i] in users_guess_results and users_guess_input[i] not in word_to_be_guessed[i:]:
-                    break
-                else:
-                    present_in_word.add(users_guess_input[i])
-            else:
-                not_in_word.add(users_guess_input[i])
+        check_letter_in_word(users_guess_input, word_to_be_guessed, users_guess_results, present_in_word, not_in_word)
         if check_word_is_right(word_to_be_guessed, users_guess_results):
             game_over(True, word_to_be_guessed)
         print("Incorrect letters: " + ', '.join(not_in_word))
