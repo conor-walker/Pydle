@@ -3,7 +3,7 @@ import random
 import sys
 
 
-def getGuess(number):
+def get_guess(number):
     validGuess = False
     guess = ""
     while not validGuess:
@@ -21,23 +21,21 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-def getWord():
+# Gets a random word from a words.txt file present in the same directory as this script
+def get_random_word():
     lines = open(resource_path('words.txt')).read().splitlines()
     return random.choice(lines)
 
 
-def checkRight(wordToGuess, guessSoFar):
-    if str(wordToGuess).upper() == str(guessSoFar).upper():
+# Compares the users input with the word to be guessed. Returns true if the guess is correct, false otherwise
+def check_word_is_right(word_guessed, word_to_guess):
+    if str(word_guessed).upper() == str(word_to_guess).upper():
         return True
     else:
         return False
 
-    
-def quit():
-    input("Thanks for playing! Press ENTER to exit :)")
-    sys.exit(0)
 
-    
+# Makes a cool header.
 def header():
     return r" ______   ______  _     _____" + "\n" + \
            r"|  _ \ \ / /  _ \| |   | ____|" + "\n" + \
@@ -46,35 +44,54 @@ def header():
            r"|_|    |_| |____/|_____|_____|"
 
 
-print("Welcome to...")
-print(header())
-print("A totally original guessing game!")
-emptyWordGuess = ["_"] * 5
-wrongLetters, rightLettersWrongPlace = set()
-wordToGuess = list(getWord().upper())
-# print(wordToGuess)
+# Prints welcome messages
+def intro():
+    print("Welcome to...")
+    print(header())
+    print("A totally original guessing game!")
 
-counter = 1
-while counter < 6:
-    userGuess = getGuess(counter)
-    emptyWordGuess = ["_"] * 5
-    for i in range(len(userGuess)):
-        if wordToGuess[i] == userGuess[i]:
-            emptyWordGuess[i] = userGuess[i]
-        elif userGuess[i] in wordToGuess:
-            if userGuess[i] in emptyWordGuess and userGuess[i] not in wordToGuess[i:]:
-                break
+
+# Prints the results, a thank-you message and gracefully exits
+def game_over(user_was_right, correct_word):
+    if user_was_right:
+        print("Congratulations! The word was", ''.join(correct_word).capitalize())
+    else:
+        print("Ran out of guesses! The word was: ", "".join(correct_word))
+    input("Thanks for playing! Press ENTER to exit :)")
+    sys.exit(0)
+
+
+# Main game flow.
+def game_logic():
+    not_in_word, present_in_word = set(), set()
+    word_to_be_guessed = list(get_random_word().upper())
+    counter = 1
+    while counter < 7:
+        users_guess_input = get_guess(counter)
+        users_guess_results = ["_"] * 5
+        for i in range(len(users_guess_input)):
+            if word_to_be_guessed[i] == users_guess_input[i]:
+                users_guess_results[i] = users_guess_input[i]
+            elif users_guess_input[i] in word_to_be_guessed:
+                if users_guess_input[i] in users_guess_results and users_guess_input[i] not in word_to_be_guessed[i:]:
+                    break
+                else:
+                    present_in_word.add(users_guess_input[i])
             else:
-                rightLettersWrongPlace.add(userGuess[i])
-        else:
-            wrongLetters.add(userGuess[i])
-    if checkRight(wordToGuess, emptyWordGuess):
-        print("Congratulations! The word was", ''.join(wordToGuess).capitalize())
-        quit()
-    print("Incorrect letters: " + ', '.join(wrongLetters))
-    print("Correct letters in the wrong place: " + ', '.join(rightLettersWrongPlace))
-    print("Result: " + " ".join(emptyWordGuess))
-    counter += 1
+                not_in_word.add(users_guess_input[i])
+        if check_word_is_right(word_to_be_guessed, users_guess_results):
+            game_over(True, word_to_be_guessed)
+        print("Incorrect letters: " + ', '.join(not_in_word))
+        print("Correct letters in the wrong place: " + ', '.join(present_in_word))
+        print("Result: " + " ".join(users_guess_results))
+        counter += 1
+    game_over(False, word_to_be_guessed)
 
-print("Ran out of guesses! The word was: ", "".join(wordToGuess))
-quit()
+
+def main():
+    intro()
+    game_logic()
+
+
+if __name__ == '__main__':
+    main()
