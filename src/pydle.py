@@ -6,8 +6,8 @@ from datetime import date
 from colorama import init, Fore
 
 
-def add_colour(colour, uncoloured_string):  # I COULD NOT RESIST NAMING IT THIS I'M SORRY - Goudham
-    return colour + uncoloured_string + Fore.RESET  # Add the given colour and then resets it - Goudham
+def add_colour(colour, uncoloured_string):
+    return colour + uncoloured_string + Fore.RESET
 
 
 # Gets the input from a user - number param is used to display the guess number the user is on
@@ -45,7 +45,7 @@ def get_random_word():
 
 # Compares the users input with the word to be guessed. Returns true if the guess is correct, false otherwise
 def check_word_is_right(word_to_guess, word_guessed):
-    return "".join(word_to_guess) == str(word_guessed).upper()  # The 'word_to_guess' will now be a list - Goudham
+    return "".join(word_to_guess) == str(word_guessed).upper()
 
 
 # Makes a cool header.
@@ -60,21 +60,19 @@ def header():
 # Prints welcome messages
 def intro():
     print("Welcome to...")
-    print(add_colour(Fore.MAGENTA, header()))  # You could make this multicoloured - Goudham
+    print(add_colour(Fore.MAGENTA, header()))
     print("A totally original guessing game!")
 
 
-# Prints the results, a thank-you message and gracefully exits
 def game_over(user_was_right, correct_word):
     if user_was_right:
-        print("Congratulations! You figured it out!")  # No need to display the word again? - Goudham
+        print("Congratulations! You figured it out!")
     else:
         print("Ran out of guesses! The word was:", add_colour(Fore.GREEN, ''.join(correct_word).capitalize()))
     input("Thanks for playing! Press ENTER to exit :)")
     sys.exit(0)
 
 
-# Store how many times each letter appears in the word - Goudham
 def count_letter_frequency(word):
     letter_frequency = {}
     for letter in word:
@@ -82,7 +80,6 @@ def count_letter_frequency(word):
     return letter_frequency
 
 
-# Initialise the letter frequency map to count up the way as a letter is encountered out of position - Goudham
 def initialise_letter_frequency(word):
     letter_frequency = {}
     for letter in word:
@@ -90,29 +87,24 @@ def initialise_letter_frequency(word):
     return letter_frequency
 
 
-# So this is like a massive rework right, it's basically like the actual wordle game with colouring - Goudham
 def get_wordle_string(users_guess_input, word_to_be_guessed):
-    green_letter_map = count_letter_frequency(word_to_be_guessed)
-    yellow_letter_map = initialise_letter_frequency(word_to_be_guessed)
-    raw_letters = []
+    green_letters = count_letter_frequency(word_to_be_guessed)
+    yellow_letters = initialise_letter_frequency(word_to_be_guessed)
     wordle_string = []
 
-    # Doing a first pass to just check the correct letters and updating 'green_letter_map' - Goudham
     for index, letter in enumerate(users_guess_input):
         if word_to_be_guessed[index] == letter:
-            green_letter_map[letter] = green_letter_map[letter] - 1
-            wordle_string.append(add_colour(Fore.GREEN, letter))  # Green if it's in the right place - Goudham
+            green_letters[letter] = green_letters[letter] - 1
+            wordle_string.append((Fore.GREEN, letter))
         else:
-            wordle_string.append(add_colour(Fore.LIGHTBLACK_EX, letter))  # Grey if it doesn't exist - Goudham
-        raw_letters.append(letter)
+            wordle_string.append((Fore.LIGHTBLACK_EX, letter))
 
-    # On the second pass, if there are any letters out of position using the knowledge from the first pass - Goudham
-    for index, letter in enumerate(raw_letters):
-        if letter in word_to_be_guessed and yellow_letter_map[letter] < green_letter_map[letter]:
-            yellow_letter_map[letter] = yellow_letter_map[letter] + 1
-            wordle_string[index] = add_colour(Fore.YELLOW, letter)  # Yellow if it's in the wrong position - Goudham
+    for index, (colour, letter) in enumerate(wordle_string):
+        if letter in word_to_be_guessed and yellow_letters[letter] < green_letters[letter] and colour != Fore.GREEN:
+            yellow_letters[letter] = yellow_letters[letter] + 1
+            wordle_string[index] = (Fore.YELLOW, letter)
 
-    return " ".join(wordle_string)  # Return the list as string since no need to keep track of other lists - Goudham
+    return " ".join([add_colour(colour, letter) for colour, letter in wordle_string])
 
 
 # Main game flow.
@@ -121,7 +113,7 @@ def game_logic():
     counter = 1
     while counter < 7:
         users_guess_input = get_guess(counter)
-        print("Result:", get_wordle_string(users_guess_input, word_to_be_guessed))  # No need to pass in lists
+        print("Result:", get_wordle_string(users_guess_input, word_to_be_guessed))
         if check_word_is_right(word_to_be_guessed, users_guess_input):
             game_over(True, word_to_be_guessed)
         counter += 1
@@ -134,8 +126,5 @@ def main():
 
 
 if __name__ == '__main__':
-    # READ THIS -> I promise that this just started out with wanting to add colours...
-    #  And then it just turned into a rework sorry :( - Goudham
-
-    init()  # Read -> https://pypi.org/project/colorama/ - Goudham
+    init()
     main()
