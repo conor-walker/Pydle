@@ -3,6 +3,12 @@ import random
 import sys
 from datetime import date
 
+from colorama import init, Fore
+
+
+def add_colour(colour, uncoloured_string):  # I COULD NOT RESIST NAMING IT THIS I'M SORRY - Goudham
+    return colour + uncoloured_string + Fore.RESET  # Add the given colour and then resets it - Goudham
+
 
 # Gets the input from a user - number param is used to display the guess number the user is on
 def get_guess(number):
@@ -27,7 +33,6 @@ def resource_path(relative_path):
 # If file is not present, uses a small fallback list of words.
 # Shuffles based on a seed and selects a consistent member of the list to allow consistency between runs on same day.
 def get_random_word():
-    lines = []
     try:
         lines = open(resource_path('words.txt')).read().splitlines()
     except IOError:
@@ -39,11 +44,8 @@ def get_random_word():
 
 
 # Compares the users input with the word to be guessed. Returns true if the guess is correct, false otherwise
-def check_word_is_right(word_guessed, word_to_guess):
-    if str(word_guessed).upper() == str(word_to_guess).upper():
-        return True
-    else:
-        return False
+def check_word_is_right(word_to_guess, word_guessed):
+    return "".join(word_to_guess) == str(word_guessed).upper()  # The 'word_to_guess' will now be a list - Goudham
 
 
 # Makes a cool header.
@@ -58,50 +60,70 @@ def header():
 # Prints welcome messages
 def intro():
     print("Welcome to...")
-    print(header())
+    print(add_colour(Fore.MAGENTA, header()))  # You could make this multicoloured - Goudham
     print("A totally original guessing game!")
 
 
 # Prints the results, a thank-you message and gracefully exits
 def game_over(user_was_right, correct_word):
     if user_was_right:
-        print("Congratulations! The word was", ''.join(correct_word).capitalize())
+        print("Congratulations! You figured it out!")  # No need to display the word again? - Goudham
     else:
-        print("Ran out of guesses! The word was: ", "".join(correct_word))
+        print("Ran out of guesses! The word was:", add_colour(Fore.GREEN, ''.join(correct_word).capitalize()))
     input("Thanks for playing! Press ENTER to exit :)")
     sys.exit(0)
 
 
-# Takes in the users guess and the myriad lists involved in the game logic, and compares the letters in the guess
-# with the word to be guessed.
-# Inserts the letter into the appropriate list, based on its presence & position (or lack thereof)
-def check_letter_in_word(users_guess_input, word_to_be_guessed, users_guess_results, present_in_word, not_in_word):
-    for i in range(len(users_guess_input)):
-        if word_to_be_guessed[i] == users_guess_input[i]:
-            users_guess_results[i] = users_guess_input[i]
-        elif users_guess_input[i] in word_to_be_guessed:
-            if users_guess_input[i] in users_guess_results and users_guess_input[i] not in word_to_be_guessed[i:]:
-                break
-            else:
-                present_in_word.add(users_guess_input[i])
+# Store how many times each letter appears in the word - Goudham
+def count_letter_frequency(word):
+    letter_frequency = {}
+    for letter in word:
+        letter_frequency[letter] = letter_frequency[letter] + 1 if letter in letter_frequency else 1
+    return letter_frequency
+
+
+# Initialise the letter frequency map to count up the way as a letter is encountered out of position - Goudham
+def initialise_letter_frequency(word):
+    letter_frequency = {}
+    for letter in word:
+        letter_frequency[letter] = 0
+    return letter_frequency
+
+
+# So this is like a massive rework right, it's basically like the actual wordle game with colouring - Goudham
+def get_wordle_string(users_guess_input, word_to_be_guessed):
+    green_letter_map = count_letter_frequency(word_to_be_guessed)
+    yellow_letter_map = initialise_letter_frequency(word_to_be_guessed)
+    raw_letters = []
+    wordle_string = []
+
+    # Doing a first pass to just check the correct letters and updating 'green_letter_map' - Goudham
+    for index, letter in enumerate(users_guess_input):
+        if word_to_be_guessed[index] == letter:
+            green_letter_map[letter] = green_letter_map[letter] - 1
+            wordle_string.append(add_colour(Fore.GREEN, letter))  # Green if it's in the right place - Goudham
         else:
-            not_in_word.add(users_guess_input[i])
+            wordle_string.append(add_colour(Fore.LIGHTBLACK_EX, letter))  # Grey if it doesn't exist - Goudham
+        raw_letters.append(letter)
+
+    # On the second pass, if there are any letters out of position using the knowledge from the first pass - Goudham
+    for index, letter in enumerate(raw_letters):
+        if letter in word_to_be_guessed and yellow_letter_map[letter] < green_letter_map[letter]:
+            yellow_letter_map[letter] = yellow_letter_map[letter] + 1
+            wordle_string[index] = add_colour(Fore.YELLOW, letter)  # Yellow if it's in the wrong position - Goudham
+
+    return " ".join(wordle_string)  # Return the list as string since no need to keep track of other lists - Goudham
 
 
 # Main game flow.
 def game_logic():
-    not_in_word, present_in_word = set(), set()
     word_to_be_guessed = list(get_random_word().upper())
     counter = 1
     while counter < 7:
         users_guess_input = get_guess(counter)
-        users_guess_results = ["_"] * 5
-        check_letter_in_word(users_guess_input, word_to_be_guessed, users_guess_results, present_in_word, not_in_word)
-        if check_word_is_right(word_to_be_guessed, users_guess_results):
+        print("Result:", get_wordle_string(users_guess_input, word_to_be_guessed))  # No need to pass in lists
+        if check_word_is_right(word_to_be_guessed, users_guess_input):
             game_over(True, word_to_be_guessed)
-        print("Incorrect letters: " + ', '.join(not_in_word))
-        print("Correct letters in the wrong place: " + ', '.join(present_in_word))
-        print("Result: " + " ".join(users_guess_results))
         counter += 1
     game_over(False, word_to_be_guessed)
 
@@ -112,4 +134,8 @@ def main():
 
 
 if __name__ == '__main__':
+    # READ THIS -> I promise that this just started out with wanting to add colours...
+    #  And then it just turned into a rework sorry :( - Goudham
+
+    init()  # Read -> https://pypi.org/project/colorama/ - Goudham
     main()
